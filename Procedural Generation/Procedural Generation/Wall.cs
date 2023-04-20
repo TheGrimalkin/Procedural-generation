@@ -1,0 +1,18 @@
+﻿namespace Procedural_Generation;
+
+    public class Wall 
+    {
+        public Orientation Direction;
+        public int[] EndPos;
+        public int[] EndNeg;
+
+        public Wall(int[] endPos, int[] endNeg, Orientation direction)
+        { 
+            Direction = direction;
+            EndPos = endPos;
+            EndNeg = endNeg;
+
+        }
+    }
+    
+    //direction 3 means not assigned, 1 horizontal and 2 vertical
