@@ -2,15 +2,13 @@
 // a class to store and use coordinates in the world
 public class Tile
 {
-    public int X;
-    public int Y;
+    public Coordinates coordinates;
     public TilesType Type;
 
     //constructor
-    public Tile(int x, int y, TilesType type = TilesType.nulltype) 
+    public Tile(Coordinates coords, TilesType type = TilesType.nulltype)
     {
-        X = x;
-        Y = y;
+        coordinates = coords;
         Type = type;
     }
 }

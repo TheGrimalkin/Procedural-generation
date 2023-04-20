@@ -3,10 +3,10 @@
     public class Wall 
     {
         public Orientation Direction;
-        public int[] EndPos;
-        public int[] EndNeg;
+        public Coordinates EndPos;
+        public Coordinates EndNeg;
 
-        public Wall(int[] endPos, int[] endNeg, Orientation direction)
+        public Wall(Coordinates endPos, Coordinates endNeg, Orientation direction)
         { 
             Direction = direction;
             EndPos = endPos;

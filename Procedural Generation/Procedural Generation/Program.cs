@@ -3,23 +3,18 @@
 bool debug = false;
 
 //Initializing the world
-World world = new World(11, 11, 10);
+World world = new World(51, 51, 10);
 
 //Place Walls at random
 world.GenerateWallSeeds();
 world.WallSeedGrowth();
 
-world.WriteTile(0,0, TilesType.center);
 
 
-
-
+world.WriteTile(new Coordinates(0,0), TilesType.center);
 
 
 //prints the grid
-//world.PrintWorld();
-
-
 
 
 //All the tests for the funcs
@@ -27,18 +22,18 @@ if (debug)
 {
     //Tests the TilesAtRange func
     Console.Write("These are the tiles within 1 tiles of (0, 0) : ");
-    foreach (var v in world.TilesAtRange(1, new Tile(0,0)))
+    foreach (var v in world.TilesAtRange(1, new Tile(new Coordinates(0,0),0)))
     {
         Console.Write(v.Type + " ");
     }
     Console.WriteLine();
 
 //Tests the IsThereTile func
-    Console.Write("Is there a wall around (0, 0) ? : " + world.IsThereTile(new Tile(0,0, TilesType.wall), 1));
+    Console.Write("Is there a wall around (0, 0) ? : " + world.IsThereTile(new Tile(new Coordinates(0,0), TilesType.wall), 1));
     Console.WriteLine();
 
 //Tests the HowMuchTilesAtRange func
-    Console.Write("How much walls there is around (0, 0) ? : " + world.HowMuchTilesAtRange(new Tile(1,1, TilesType.wall), 1));
+    Console.Write("How much walls there is around (0, 0) ? : " + world.HowMuchTilesAtRange(new Tile(new Coordinates(1,1), TilesType.wall), 1));
     Console.WriteLine();
 
 
@@ -54,3 +49,5 @@ if (debug)
     int gridLength = world.Grid.Length;
     Console.WriteLine($"There was a {chance/gridLength*100}% chance of generating a wall");
 }
+
+world.PrintWorld();

@@ -14,8 +14,6 @@ public enum Orientation
 public class World
 {
     private Random _random = new Random();
-    
-
 
     //parameters
     public int SizeX;
@@ -52,7 +50,7 @@ public class World
         return indexX;
     }
     
-    private int GetIndexY(int y)
+    public int GetIndexY(int y)
     {
         int indexY = -y + _yOffset;
         if (indexY < 0 || indexY >= Grid.GetLength(1))
@@ -62,7 +60,8 @@ public class World
         return indexY;
     }
     
-    //Function that returns the coordinate from an index. Used mostly in other functions
+    //Function that returns the coordinates from an index. Used mostly in other functions
+
     private  int GetCoordX(int x)
     { 
         int coordX = x - _xOffset;
@@ -78,32 +77,32 @@ public class World
     //Funcs to interact with a specific tile
     public Tile GetTile(int x, int y)
     {
-        return new Tile(x, y, Grid[GetIndexX(x), GetIndexY(y)]);
+        return new Tile(new Coordinates(x,y), Grid[GetIndexX(x), GetIndexY(y)]);
     }
 
-    public void WriteTile(int x, int y, TilesType type) 
+    public void WriteTile(Coordinates coords, TilesType type) 
     {
-        Grid[GetIndexX(x), GetIndexY(y)] = type;
+        Grid[GetIndexX(coords.x), GetIndexY(coords.y)] = type;
     }
 
     //Func that returns a list of every tiles at X range from a base point
     public List<Tile> TilesAtRange(int range, Tile baseTile) 
     {
         List<Tile> returnList = new List<Tile>();
-        for (int x = baseTile.X - range; x <= baseTile.X + range; x++)
+        for (int x = baseTile.coordinates.x - range; x <= baseTile.coordinates.x + range; x++)
         {
             if (x < -_xOffset || x > _xOffset)
             {
                 continue;
             }
-            for (int y = baseTile.Y - range; y <= baseTile.Y + range; y++)
+            for (int y = baseTile.coordinates.y - range; y <= baseTile.coordinates.y + range; y++)
             {
                 if (y < -_yOffset || y > _yOffset)
                 {
                     continue;
                 }
                 
-                if(baseTile.X == x && baseTile.Y==y) {continue;} //Prevents counting itself
+                if(baseTile.coordinates.x == x && baseTile.coordinates.y==y) {continue;} //Prevents counting itself
                 returnList.Add(GetTile(x,y));
             }
         }
@@ -115,7 +114,7 @@ public class World
     {
         foreach (Tile tile in TilesAtRange(range, baseTile))
         {
-            if (tile.X == baseTile.X && tile.Y == baseTile.Y) {continue;}     //prevents counting itself
+            if (tile.coordinates.x == baseTile.coordinates.x && tile.coordinates.y == baseTile.coordinates.y) {continue;}     //prevents counting itself
             if (tile.Type == baseTile.Type)
             {
                 return true;
@@ -129,7 +128,7 @@ public class World
         int amount = 0;
         foreach (Tile tile in TilesAtRange(range, baseTile))
         {
-            if (tile.X == baseTile.X && tile.Y == baseTile.Y) {continue;}     //prevents counting itself
+            if (tile.coordinates.x == baseTile.coordinates.x && tile.coordinates.y == baseTile.coordinates.y) {continue;}     //prevents counting itself
             if (tile.Type == baseTile.Type)
             {
                 amount++;
@@ -142,15 +141,15 @@ public class World
     {                                                                   // IsPositive is to check if it is the EndPos or the EndNeg that we need to target as a first tile
         if (isPositive)
         {
-            foreach (Tile tile in TilesAtRange(range, new Tile(baseWall.EndPos[0], baseWall.EndPos[1], TilesType.wall)))
+            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndPos.x, baseWall.EndPos.y), TilesType.wall)))
             {
                 if (tile.Type == TilesType.wall )      
                 {
-                    if (tile.Y != baseWall.EndPos[1]) // true if isn't on the same line 
+                    if (tile.coordinates.y != baseWall.EndPos.y) // true if isn't on the same line 
                     {
                         return true;
                     }
-                    if ( tile.X > baseWall.EndPos[0] || tile.X < baseWall.EndNeg[0]) //true if tile is not in the wall interval
+                    if ( tile.coordinates.x > baseWall.EndPos.x || tile.coordinates.x < baseWall.EndNeg.x) //true if tile is not in the wall interval
                     {
                         return true;
                     }
@@ -159,15 +158,15 @@ public class World
         }
         else
         {
-            foreach (Tile tile in TilesAtRange(range, new Tile(baseWall.EndNeg[0], baseWall.EndNeg[1], TilesType.wall)))
+            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndNeg.x, baseWall.EndNeg.y), TilesType.wall)))
             {
                 if (tile.Type == TilesType.wall )      
                 {
-                    if (tile.Y != baseWall.EndNeg[1]) 
+                    if (tile.coordinates.y != baseWall.EndNeg.y) 
                     {
                         return true;
                     }
-                    if ( tile.X > baseWall.EndPos[0] || tile.X < baseWall.EndNeg[0]) 
+                    if ( tile.coordinates.x > baseWall.EndPos.x || tile.coordinates.x < baseWall.EndNeg.x) 
                     {
                         return true;
                     }
@@ -181,15 +180,15 @@ public class World
     {                                                                   
         if (isPositive)
         {
-            foreach (Tile tile in TilesAtRange(range, new Tile(baseWall.EndPos[0], baseWall.EndPos[1], TilesType.wall)))
+            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndPos.x, baseWall.EndPos.y), TilesType.wall)))
             {
                 if (tile.Type == TilesType.wall )      
                 {
-                    if (tile.X != baseWall.EndPos[0]) 
+                    if (tile.coordinates.x != baseWall.EndPos.x) 
                     {
                         return true;
                     }
-                    if ( tile.Y > baseWall.EndPos[1] || tile.Y < baseWall.EndNeg[1]) 
+                    if ( tile.coordinates.y > baseWall.EndPos.y || tile.coordinates.y < baseWall.EndNeg.y) 
                     {
                         return true;
                     }
@@ -198,15 +197,15 @@ public class World
         }
         else
         {
-            foreach (Tile tile in TilesAtRange(range, new Tile(baseWall.EndNeg[0], baseWall.EndNeg[1], TilesType.wall)))
+            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndNeg.x, baseWall.EndNeg.y), TilesType.wall)))
             {
                 if (tile.Type == TilesType.wall )      
                 {
-                    if (tile.X != baseWall.EndNeg[0]) 
+                    if (tile.coordinates.x != baseWall.EndNeg.x) 
                     {
                         return true;
                     }
-                    if ( tile.Y > baseWall.EndPos[1] || tile.Y < baseWall.EndNeg[1]) 
+                    if ( tile.coordinates.y > baseWall.EndPos.y || tile.coordinates.y < baseWall.EndNeg.y) 
                     {
                         return true;
                     }
@@ -243,10 +242,10 @@ public class World
             {
                 if (_random.Next(1,101) <= ChanceOfGeneratingWall)
                 {
-                    if (!IsThereTile(new Tile(GetCoordX(x),GetCoordY(y),TilesType.wall),1))
+                    if (!IsThereTile(new Tile(new Coordinates(GetCoordX(x),GetCoordY(y)),TilesType.wall),1))
                     {
                         Grid[x, y] = TilesType.wall;
-                        _wallList.Add(new Wall(new int[]{GetCoordX(x),GetCoordY(y)},new int[]{GetCoordX(x),GetCoordY(y)}, (Orientation)_random.Next(1,3)));
+                        _wallList.Add(new Wall(new Coordinates(GetCoordX(x),GetCoordY(y)),new Coordinates(GetCoordX(x),GetCoordY(y)), (Orientation)_random.Next(1,3)));
                     }
                 }
             }
@@ -276,31 +275,31 @@ public class World
                     updatedNeg = false;
                     if (wall.Direction == Orientation.horizontal)
                     {
-                        if (wall.EndPos[0] + 1 <= _xOffset && !WallSearchX(wall,1,true))     //this doesn't work     
+                        if (wall.EndPos.x + 1 <= _xOffset && !WallSearchX(wall,1,true))     //this doesn't work     
                         {
-                            WriteTile(wall.EndPos[0]+1, wall.EndPos[1], TilesType.wall);
-                            wall.EndPos[0]++;
+                            WriteTile(new Coordinates(wall.EndPos.x+1, wall.EndPos.y), TilesType.wall);
+                            wall.EndPos.x++;
                             updatedPos = true;
                         }
-                        if ( wall.EndNeg[0] -1 >= -_xOffset && !WallSearchX(wall,1,false))
+                        if ( wall.EndNeg.x -1 >= -_xOffset && !WallSearchX(wall,1,false))
                         {
-                            WriteTile(wall.EndNeg[0]-1, wall.EndNeg[1], TilesType.wall);
-                            wall.EndNeg[0]--;
+                            WriteTile( new Coordinates(wall.EndNeg.x-1, wall.EndNeg.y), TilesType.wall);
+                            wall.EndNeg.x--;
                             updatedNeg = true;
                         }
                     }
                     if (wall.Direction == Orientation.vertical)
                     {
-                        if (wall.EndPos[1] + 1 <= _yOffset && !WallSearchY(wall,1,true))
+                        if (wall.EndPos.y + 1 <= _yOffset && !WallSearchY(wall,1,true))
                         {
-                            WriteTile(wall.EndPos[0], wall.EndPos[1]+1, TilesType.wall);
-                            wall.EndPos[1]++;
+                            WriteTile(new Coordinates(wall.EndPos.x, wall.EndPos.y+1), TilesType.wall);
+                            wall.EndPos.y++;
                             updatedPos = true;
                         }
-                        if ( wall.EndNeg[1] -1 >= -_yOffset && !WallSearchY(wall,1,false))
+                        if ( wall.EndNeg.y -1 >= -_yOffset && !WallSearchY(wall,1,false))
                         {
-                            WriteTile(wall.EndNeg[0], wall.EndNeg[1]-1, TilesType.wall);
-                            wall.EndNeg[1]--;
+                            WriteTile(new Coordinates(wall.EndNeg.x, wall.EndNeg.y-1), TilesType.wall);
+                            wall.EndNeg.y--;
                             updatedNeg = true;
                         }
                     }
@@ -311,8 +310,8 @@ public class World
                     }
                     currentIndex++;
                 }
-                PrintWorld();
-                Console.WriteLine();
+                //PrintWorld();
+                //Console.WriteLine();
             //}
         }
     }
@@ -330,7 +329,7 @@ public class World
                 }
                 else
                 {
-                    Console.Write(" \u2B1A"); 
+                    Console.Write(" " +(int)Grid[x,y]); 
                 }
             }
             Console.WriteLine();
