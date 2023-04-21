@@ -141,7 +141,7 @@ public class World
     {                                                                   // IsPositive is to check if it is the EndPos or the EndNeg that we need to target as a first tile
         if (isPositive)
         {
-            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndPos.x, baseWall.EndPos.y), TilesType.wall)))
+            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndPos.x + 1, baseWall.EndPos.y), TilesType.wall)))
             {
                 if (tile.Type == TilesType.wall )      
                 {
@@ -158,7 +158,7 @@ public class World
         }
         else
         {
-            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndNeg.x, baseWall.EndNeg.y), TilesType.wall)))
+            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndNeg.x - 1, baseWall.EndNeg.y), TilesType.wall)))
             {
                 if (tile.Type == TilesType.wall )      
                 {
@@ -180,7 +180,7 @@ public class World
     {                                                                   
         if (isPositive)
         {
-            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndPos.x, baseWall.EndPos.y), TilesType.wall)))
+            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndPos.x, baseWall.EndPos.y + 1), TilesType.wall)))
             {
                 if (tile.Type == TilesType.wall )      
                 {
@@ -197,7 +197,7 @@ public class World
         }
         else
         {
-            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndNeg.x, baseWall.EndNeg.y), TilesType.wall)))
+            foreach (Tile tile in TilesAtRange(range, new Tile(new Coordinates(baseWall.EndNeg.x, baseWall.EndNeg.y - 1), TilesType.wall)))
             {
                 if (tile.Type == TilesType.wall )      
                 {
@@ -253,21 +253,16 @@ public class World
     }
     
     //Func to start the wall's extension 
-    public void WallSeedGrowth()    //TODO don't work
+    public void WallSeedGrowth()
     {
-        
-        //debugging
-        //_wallList.Add(new Wall(new []{0,2},new []{0,2}, Orientation.horizontal));
-        //WriteTile(0,2, TilesType.wall);
-        
-        //List<int> indexesToRemove = new List<int>();
+        List<Wall> wallToGrowth = _wallList;
         int currentIndex;
         bool updatedPos;
         bool updatedNeg;
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 20; i++)
         {
-            //if (_wallList.Count>0)
-            //{
+            PrintWorld();
+            Console.WriteLine();
                 currentIndex = 0;
                 foreach (var wall in _wallList)
                 {
@@ -303,16 +298,7 @@ public class World
                             updatedNeg = true;
                         }
                     }
-
-                    if (updatedNeg==false && updatedPos==false)
-                    {
-                        //indexesToRemove.Add(currentIndex);
-                    }
-                    currentIndex++;
                 }
-                //PrintWorld();
-                //Console.WriteLine();
-            //}
         }
     }
     
