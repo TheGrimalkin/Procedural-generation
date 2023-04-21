@@ -3,22 +3,15 @@
 bool debug = false;
 
 //Initializing the world
-World world = new World(25, 25, 10);
-
-Wall wallTest = new Wall(new Coordinates(0, 2), new Coordinates(0, 2), Orientation.horizontal);
-//world.WriteTile(new Coordinates(0,2),TilesType.wall);
-//world.WriteTile(new Coordinates(0,2),TilesType.wall);
-//world._wallList.Add(wallTest);
+World world = new World(91, 91, 10);
 
 //Place Walls at random
-//world.WriteTile(new Coordinates(3,2), TilesType.wall);
-//if(world.WallSearchX(wallTest,1,true)) Console.WriteLine("there is a wall");
 
-world.WriteTile(new Coordinates(0,0), TilesType.center);
 
 world.GenerateWallSeeds();
 world.WallSeedGrowth();
 
+world.WriteTile(new Coordinates(0,0), TilesType.center);
 
 //All the tests for the funcs
 if (debug)

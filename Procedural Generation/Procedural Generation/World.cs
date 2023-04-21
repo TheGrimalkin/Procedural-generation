@@ -24,6 +24,7 @@ public class World
     public int _yOffset;
 
     public List<Wall> _wallList = new List<Wall>(); 
+    public List<Wall> FinishedWallList = new List<Wall>();
 
     //Constructor
     public World(int sizeX, int sizeY, int chanceOfGeneratingWall)
@@ -255,50 +256,59 @@ public class World
     //Func to start the wall's extension 
     public void WallSeedGrowth()
     {
-        List<Wall> wallToGrowth = _wallList;
-        int currentIndex;
+        List<Wall> wallsToRemove = new List<Wall>();
         bool updatedPos;
         bool updatedNeg;
-        for (int i = 0; i < 20; i++)
+        foreach (var wall in _wallList)
         {
-            PrintWorld();
-            Console.WriteLine();
-                currentIndex = 0;
-                foreach (var wall in _wallList)
+            updatedPos = false;
+            updatedNeg = false;
+            if (wall.Direction == Orientation.horizontal)       
+            {
+                if (wall.EndPos.x + 1 <= _xOffset && !WallSearchX(wall,1,true))  //Checks if able to put a wall        
                 {
-                    updatedPos = false;
-                    updatedNeg = false;
-                    if (wall.Direction == Orientation.horizontal)
-                    {
-                        if (wall.EndPos.x + 1 <= _xOffset && !WallSearchX(wall,1,true))     //this doesn't work     
-                        {
-                            WriteTile(new Coordinates(wall.EndPos.x+1, wall.EndPos.y), TilesType.wall);
-                            wall.EndPos.x++;
-                            updatedPos = true;
-                        }
-                        if ( wall.EndNeg.x -1 >= -_xOffset && !WallSearchX(wall,1,false))
-                        {
-                            WriteTile( new Coordinates(wall.EndNeg.x-1, wall.EndNeg.y), TilesType.wall);
-                            wall.EndNeg.x--;
-                            updatedNeg = true;
-                        }
-                    }
-                    if (wall.Direction == Orientation.vertical)
-                    {
-                        if (wall.EndPos.y + 1 <= _yOffset && !WallSearchY(wall,1,true))
-                        {
-                            WriteTile(new Coordinates(wall.EndPos.x, wall.EndPos.y+1), TilesType.wall);
-                            wall.EndPos.y++;
-                            updatedPos = true;
-                        }
-                        if ( wall.EndNeg.y -1 >= -_yOffset && !WallSearchY(wall,1,false))
-                        {
-                            WriteTile(new Coordinates(wall.EndNeg.x, wall.EndNeg.y-1), TilesType.wall);
-                            wall.EndNeg.y--;
-                            updatedNeg = true;
-                        }
-                    }
+                    WriteTile(new Coordinates(wall.EndPos.x+1, wall.EndPos.y), TilesType.wall);
+                    wall.EndPos.x++;
+                    updatedPos = true;
                 }
+                if ( wall.EndNeg.x -1 >= -_xOffset && !WallSearchX(wall,1,false))
+                {
+                    WriteTile( new Coordinates(wall.EndNeg.x-1, wall.EndNeg.y), TilesType.wall);
+                    wall.EndNeg.x--;
+                    updatedNeg = true;
+                }
+            }
+            if (wall.Direction == Orientation.vertical)
+            {
+                if (wall.EndPos.y + 1 <= _yOffset && !WallSearchY(wall,1,true))
+                {
+                    WriteTile(new Coordinates(wall.EndPos.x, wall.EndPos.y+1), TilesType.wall);
+                    wall.EndPos.y++;
+                    updatedPos = true;
+                }
+                if ( wall.EndNeg.y -1 >= -_yOffset && !WallSearchY(wall,1,false))
+                {
+                    WriteTile(new Coordinates(wall.EndNeg.x, wall.EndNeg.y-1), TilesType.wall);
+                    wall.EndNeg.y--;
+                    updatedNeg = true;
+                }
+            }
+
+            if (!updatedPos && !updatedNeg)     // Checks if wall has finished growing
+            {
+                FinishedWallList.Add(wall);
+                wallsToRemove.Add(wall);
+            }
+        }
+
+        foreach (var wall in wallsToRemove)     //  Removes all the walls that are finished
+        {
+            _wallList.Remove(wall);
+        }
+        
+        if (_wallList.Count>0)
+        {
+            WallSeedGrowth();               // Calls the function again if all the walls aren't finished
         }
     }
     
@@ -315,7 +325,7 @@ public class World
                 }
                 else
                 {
-                    Console.Write(" " +(int)Grid[x,y]); 
+                    Console.Write("  " ); 
                 }
             }
             Console.WriteLine();
